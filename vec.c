@@ -21,25 +21,28 @@ void vec_init(vec *v)
 
 void vec_free(vec *v)
 {
-  if(v->data != NULL || v->len == 0 || v->cap == 0)
-  {
-    free(v->data);
-  }
+  free(v->data);
+  v->data = NULL;
+  v->len = 0;
+  v->cap = 0;
+
 }
 
 int vec_push(vec *v, int x)
 {
   if(v->cap == 0)
   {
-    v->cap = 1;
-    v->len = 0;
-    v->data = malloc(sizeof(i32) * 1);
-
-    if(!v->data)
+    i32 *temp = malloc(sizeof(*temp) * 1);
+    
+    if(!temp)
     {
       perror("Erreur lors de l'allocation (utilisation malloc v->data)");
       return -1;
     }
+    v->data = temp;
+    v->cap = 1;
+    v->len = 0;
+
 
   }
 
@@ -51,27 +54,23 @@ int vec_push(vec *v, int x)
 
   }
   else {
-    vec temp;
-    temp.data = realloc(v->data, sizeof(int) * v->cap * 2);
+    i32 *temp = realloc(v->data, sizeof(*temp) * v->cap * 2);
     
-    if (!temp.data)
+    if (!temp)
     {
-      perror("Erreur lors de la reallocation (utilisaton de realooc temp.data)");
+      perror("Erreur lors de la reallocation (utilisaton de realooc temp)");
       return -1;
     }
      v->len += 1;
 
-    v->data = temp.data;
+    v->data = temp;
 
     v->cap *= 2;
 
     *(v->data + v->len - 1) = x;
 
   }
-  printf("--->%zu", v->len);
-  printf("********>%d\n",   *(v->data + v->len - 1)  );
-
- 
+  
 
   return 0;
 }
