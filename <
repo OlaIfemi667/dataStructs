@@ -1,0 +1,76 @@
+//typedef struct entry {
+//    char *key;              /* copie possédée par la table */
+//    int value;
+//    struct entry *next;     /* chaînage dans la même case */
+//} entry;
+
+//typedef struct {
+//    entry **buckets;        /* tableau de nbuckets pointeurs */
+//    size_t nbuckets;
+//    size_t count;           /* nombre de clés stockées */
+//} ht;
+
+#include <stddef.h>
+#include <stdlib.h>
+#include "ht.h"
+#include <stdint.h>
+
+typedef int32_t i32;
+typedef int8_t i8;
+typedef uint32_t u32;
+
+
+void ht_init(ht *t)
+{
+  t->buckets = NULL;
+  t->nbuckets = 0;
+  t->count = 0;
+}
+
+void ht_free(ht *t)
+{
+  free(t->buckets);
+  t->buckets = NULL;
+  t->nbuckets = 0;
+  t->count = 0;
+}
+
+u32 djb2(const char *str)
+{
+  u32 hash = 5381;
+  i8 c = *str;
+
+  while (!c)
+  {
+    c = *str;
+    hash = ((hash << 5 ) + hash) + c;
+    str++;
+  }
+  return hash;
+}
+
+i32 ht_set(ht *t, const char *key, int value)
+{
+
+  if (t->buckets == NULL){
+    entry **temp = calloc(16, sizeof(*temp));
+    if (!temp)
+      return -1;
+
+    t->buckets = temp;
+    t->nbuckets = 16;
+    i32 i = djb2(key) % t->nbuckets;
+    t->buckets[i]->key = (char*) key;
+    return 0;
+  }
+
+}
+
+i32 ht_get(const ht *t, const char *key, int *out)
+{
+}
+
+i32 ht_remove(ht *t, const char *key)
+{
+
+}
